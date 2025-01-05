@@ -37,6 +37,18 @@ app.post("/create", async (req, res) => {
   res.json({ message: "I am listening to create!" });
 });
 
+app.patch("/:noteId", async (req, res)=>{
+  const {noteId}=req.params;
+
+    
+    const {title, description}= req.body as IncomingBody
+
+  const note = await Note.findByIdAndUpdate(noteId, {title, description}, {new: true})
+  if (!note) return res.status(404).json({error: "Note not found!"})
+
+    res.json({ note });
+})
+
 //listen to some port
 app.listen(8000, () => {
   console.log("listening");
