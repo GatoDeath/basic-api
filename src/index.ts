@@ -1,6 +1,7 @@
 import express from "express";
 import "./db";
-import Note from "./models/note";
+import Note, { NoteDocument } from "./models/note";
+import { title } from "process";
 
 // create a server
 const app = express();
@@ -15,13 +16,24 @@ app.post("/", (req, res) => {
   res.json({ message: "I am listening!" });
 });
 
-app.post("/create", async (req, res) => {
-  const newNote = new Note({
-    title: req.body.title,
-    description: req.body.description,
-  });
+interface IncomingBody {
+  title: string,
+  description?: string; 
+}
 
-  await newNote.save();
+app.post("/create", async (req, res) => {
+  // const newNote = new Note<NoteDocument>({
+  //   title: (req.body as IncomingBody).title ,
+  //   description: (req.body as IncomingBody).description,
+  // });
+
+  // await newNote.save();
+
+  await Note.create<NoteDocument>({
+        title: (req.body).title ,
+    description: (req.body).description,
+  })
+  
   res.json({ message: "I am listening to create!" });
 });
 
